@@ -19,6 +19,8 @@
  @ Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  @****************************************************************************/
 
+#include "asm.S"
+
 	.fpu neon
 	.text
 	.align 2
@@ -34,9 +36,8 @@ coeff_7to2:
 	.float 0.5
 	.float 0.25
 	.float 0.25
-	.global convert_7to2_neon_asm
-	.type	convert_7to2_neon_asm, %function
-convert_7to2_neon_asm:
+
+function convert_7to2_neon_asm, export=1
 	push {r4,lr}
 
 	adr COEFF, coeff_7to2
@@ -63,16 +64,15 @@ convert_7to2_neon_asm:
 	bne 0b
 
 	pop {r4,pc}
-
+endfunc
 
 coeff_5to2:
 	.float 0.5
 	.float 0.5
 	.float 0.33
 	.float 0.33
-	.global convert_5to2_neon_asm
-	.type	convert_5to2_neon_asm, %function
-convert_5to2_neon_asm:
+
+function convert_5to2_neon_asm, export=1
 	push {r4,lr}
 
 	adr COEFF, coeff_5to2
@@ -95,14 +95,13 @@ convert_5to2_neon_asm:
 	bne 0b
 
 	pop {r4,pc}
-
+endfunc
 
 coeff_4to2:
 	.float 0.5
 	.float 0.5
-	.global convert_4to2_neon_asm
-	.type	convert_4to2_neon_asm, %function
-convert_4to2_neon_asm:
+
+function convert_4to2_neon_asm, export=1
 	push {r4,lr}
 
 	adr COEFF, coeff_4to2
@@ -119,14 +118,13 @@ convert_4to2_neon_asm:
 	bne 0b
 
 	pop {r4,pc}
-
+endfunc
 
 coeff_3to2:
 	.float 0.5
 	.float 0.5
-	.global convert_3to2_neon_asm
-	.type	convert_3to2_neon_asm, %function
-convert_3to2_neon_asm:
+
+function convert_3to2_neon_asm, export=1
 	push {r4,lr}
 
 	adr COEFF, coeff_3to2
@@ -147,16 +145,15 @@ convert_3to2_neon_asm:
 	bne 0b
 
 	pop {r4,pc}
-
+endfunc
 
 coeff_7to1:
 	.float 0.25
 	.float 0.25
 	.float 0.125
 	.float 0.125
-	.global convert_7to1_neon_asm
-	.type	convert_7to1_neon_asm, %function
-convert_7to1_neon_asm:
+
+function convert_7to1_neon_asm, export=1
 	push {r4,lr}
 
 	adr COEFF, coeff_7to1
@@ -181,16 +178,15 @@ convert_7to1_neon_asm:
 	bne 0b
 
 	pop {r4,pc}
-
+endfunc
 
 coeff_5to1:
 	.float 0.25
 	.float 0.25
 	.float 0.16666667
 	.float 0.16666667
-	.global convert_5to1_neon_asm
-	.type	convert_5to1_neon_asm, %function
-convert_5to1_neon_asm:
+
+function convert_5to1_neon_asm, export=1
 	push {r4,lr}
 
 	adr COEFF, coeff_5to1
@@ -212,16 +208,15 @@ convert_5to1_neon_asm:
 	bne 0b
 
 	pop {r4,pc}
-
+endfunc
 
 coeff_7to4:
 	.float 0.5
 	.float 0.5
 	.float 0.16666667
 	.float 0.16666667
-	.global convert_7to4_neon_asm
-	.type	convert_7to4_neon_asm, %function
-convert_7to4_neon_asm:
+
+function convert_7to4_neon_asm, export=1
 	push {r4,lr}
 
 	adr COEFF, coeff_7to4
@@ -247,14 +242,13 @@ convert_7to4_neon_asm:
 	bne 0b
 
 	pop {r4,pc}
-
+endfunc
 
 coeff_5to4:
 	.float 0.5
 	.float 0.5
-	.global convert_5to4_neon_asm
-	.type	convert_5to4_neon_asm, %function
-convert_5to4_neon_asm:
+
+function convert_5to4_neon_asm, export=1
 	push {r4,lr}
 
 	adr COEFF, coeff_5to4
@@ -277,3 +271,4 @@ convert_5to4_neon_asm:
 	bne 0b
 
 	pop {r4,pc}
+endfunc

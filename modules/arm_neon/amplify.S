@@ -18,6 +18,8 @@
  @ Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  @****************************************************************************/
 
+#include "asm.S"
+
 	.syntax	unified
 	.arm
 	.fpu	neon
@@ -26,10 +28,8 @@
 #define	DST	r0
 #define	SRC	r1
 #define	SIZE	r2
-	.align 2
-	.global amplify_float_arm_neon
-	.type	amplify_float_arm_neon, %function
-amplify_float_arm_neon:
+
+function amplify_float_arm_neon, export=1
 	cmp		SIZE,	#0
 	bxeq		lr
 #ifdef __ARM_PCS
@@ -79,3 +79,4 @@ amplify_float_arm_neon:
 4:	vst1.f32	{d20-d21},	[DST,:128]!
 5:	vst1.f32	{d16-d17},	[DST,:128]!
 	bx		lr
+endfunc
