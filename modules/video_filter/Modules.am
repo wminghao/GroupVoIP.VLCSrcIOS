@@ -1,3 +1,7 @@
+# When using a specific AS tool instead of gcc libtool goes mad
+# without this. (This is the case with iOS).
+LIBTOOL=@LIBTOOL@ --tag=CC
+
 SOURCES_mosaic = mosaic.c mosaic.h
 SOURCES_transform = transform.c
 SOURCES_invert = invert.c

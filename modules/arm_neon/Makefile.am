@@ -1,3 +1,7 @@
+# When using a specific AS tool instead of gcc libtool goes mad
+# without this. (This is the case with iOS).
+LIBTOOL=@LIBTOOL@ --tag=CC
+
 neondir = $(pluginsdir)/arm_neon
 
 libsimple_channel_mixer_neon_plugin_la_SOURCES = \
