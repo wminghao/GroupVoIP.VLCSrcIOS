@@ -17,11 +17,15 @@ libmatroska: libmatroska-$(MATROSKA_VERSION).tar.bz2 .sum-matroska
 	$(APPLY) $(SRC)/matroska/matroska-pic.patch
 	$(MOVE)
 
+ifdef HAVE_IOS
+MATROSKA_EXTRA_FLAGS = CXXFLAGS="${CXXFLAGS} -fvisibility=hidden"
+endif
+
 .matroska: libmatroska
 ifdef HAVE_WIN32
 	cd $< && $(MAKE) -C make/mingw32 prefix="$(PREFIX)" $(HOSTVARS) SHARED=no EBML_DLL=no libmatroska.a
 else
-	cd $< && $(MAKE) -C make/linux prefix="$(PREFIX)" $(HOSTVARS) staticlib
+	cd $< && $(MAKE) -C make/linux prefix="$(PREFIX)" $(HOSTVARS) $(MATROSKA_EXTRA_FLAGS) staticlib
 endif
 	cd $< && $(MAKE) -C make/linux install_staticlib install_headers prefix="$(PREFIX)" $(HOSTVARS)
 	$(RANLIB) "$(PREFIX)/lib/libmatroska.a"

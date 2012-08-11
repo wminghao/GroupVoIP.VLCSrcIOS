@@ -16,8 +16,11 @@ libebml: libebml-$(EBML_VERSION).tar.bz2 .sum-ebml
 	$(MOVE)
 
 # libebml requires exceptions
-EBML_EXTRA_FLAGS = CXXFLAGS="${CXXFLAGS} -fexceptions" \
-					CPPFLAGS=""
+ifdef HAVE_IOS
+EBML_EXTRA_FLAGS = CXXFLAGS="${CXXFLAGS} -fexceptions -fvisibility=hidden" CPPFLAGS=""
+else
+EBML_EXTRA_FLAGS = CXXFLAGS="${CXXFLAGS} -fexceptions" CPPFLAGS=""
+endif
 
 .ebml: libebml
 ifdef HAVE_WIN32
