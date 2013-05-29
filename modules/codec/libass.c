@@ -29,6 +29,13 @@
 #   include "config.h"
 #endif
 
+#if defined (__APPLE__)
+#include <TargetConditionals.h>
+#if TARGET_OS_IPHONE
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+#endif
+
 #include <string.h>
 #include <limits.h>
 #include <assert.h>
@@ -213,6 +220,34 @@ static int Create( vlc_object_t *p_this )
 #if defined( __ANDROID__ )
     const char *psz_font = "/system/fonts/DroidSans-Bold.ttf";
     const char *psz_family = "Droid Sans Bold";
+#elif defined (__APPLE__)
+#if !TARGET_OS_IPHONE
+    const char *psz_font = NULL; /* We don't ship a default font with VLC */
+    const char *psz_family = "Arial"; /* Use Arial if we can't find anything more suitable */
+#else
+    CFURLRef fileURL;
+    fileURL = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("OpenSans-Regular.ttf"),
+                                      NULL,
+                                      NULL);
+    CFStringRef urlString = CFURLCopyFileSystemPath(fileURL, kCFURLPOSIXPathStyle);
+    CFRelease(fileURL);
+
+    if (!urlString)
+        return VLC_EGENERIC;
+
+    CFIndex length = CFStringGetLength(urlString);
+    if (!length)
+        return VLC_EGENERIC;
+    length++;
+
+    char *psz_path = (char *)malloc(length);
+    CFStringGetCString(urlString, psz_path, length, kCFStringEncodingUTF8);
+    CFRelease(urlString);
+
+    const char *psz_font = (const char *)strdup(psz_path);
+    free(psz_path);
+    const char *psz_family = "Open Sans";
+#endif
 #else
     const char *psz_font = NULL; /* We don't ship a default font with VLC */
     const char *psz_family = "Arial"; /* Use Arial if we can't find anything more suitable */
