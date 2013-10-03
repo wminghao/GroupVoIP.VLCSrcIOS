@@ -188,7 +188,7 @@ else
     export ASCPP="xcrun as"
 fi
 
-../bootstrap --build=x86_64-apple-darwin11 --host=${TARGET} --prefix=${VLCROOT}/contrib/${TARGET}-${ARCH} --disable-gpl \
+../bootstrap --build=x86_64-apple-darwin11 --host=${TARGET} --prefix=${VLCROOT}/contrib/${TARGET}-${ARCH} --arch=${ARCH} --disable-gpl \
     --disable-disc --disable-sout \
     --disable-sdl \
     --disable-SDL_image \
