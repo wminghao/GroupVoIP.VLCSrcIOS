@@ -35,7 +35,9 @@ PREFIX := $(abspath $(PREFIX))
 ifneq ($(HOST),$(BUILD))
 HAVE_CROSS_COMPILE = 1
 endif
+ifndef ARCH
 ARCH := $(shell $(SRC)/get-arch.sh $(HOST))
+endif
 
 ifeq ($(ARCH)-$(HAVE_WIN32),x86_64-1)
 HAVE_WIN64 := 1

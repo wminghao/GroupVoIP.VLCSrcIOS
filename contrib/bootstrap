@@ -31,6 +31,7 @@ usage()
 	echo "  --disable-sout   configure to not build stream output packages"
 	echo "  --enable-small   optimize libraries for size with slight speed decrease [DANGEROUS]"
 	echo "  --disable-gpl    configure to not build viral GPL code"
+	echo "  --arch=ARCH      configure to set the target architecture if host triple is ambigous"
 }
 
 BUILD=
@@ -42,6 +43,7 @@ BUILD_ENCODERS="1"
 BUILD_NETWORK="1"
 BUILD_DISCS="1"
 GPL="1"
+ARCH=
 
 if test ! -f "../../contrib/src/main.mak"
 then
@@ -85,6 +87,9 @@ do
 			;;
 		--enable-*)
 			PKGS_ENABLE="${PKGS_ENABLE} ${1#--enable-}"
+			;;
+		--arch=*)
+			ARCH="${1#--arch=}"
 			;;
 		*)
 			echo "Unrecognized options $1"
@@ -222,6 +227,7 @@ test -z "$BUILD_ENCODERS" || add_make_enabled "BUILD_ENCODERS"
 test -z "$BUILD_NETWORK" || add_make_enabled "BUILD_NETWORK"
 test -z "$ENABLE_SMALL" || add_make_enabled "ENABLE_SMALL"
 test -z "$GPL" || add_make_enabled "GPL"
+test -z "$ARCH" || add_make "ARCH := $ARCH"
 
 #
 # Checks
@@ -235,7 +241,15 @@ case "${OS}" in
 			add_make_enabled "HAVE_MACOSX" "HAVE_DARWIN_OS" "HAVE_BSD"
 		else
 			check_ios_sdk
-			add_make_enabled "HAVE_IOS" "HAVE_DARWIN_OS" "HAVE_BSD" "HAVE_NEON" "HAVE_ARMV7A"
+			add_make_enabled "HAVE_IOS" "HAVE_DARWIN_OS" "HAVE_BSD"
+			case "${ARCH}" in
+			*arm*)
+				add_make_enabled "HAVE_NEON"
+				if [ "$ARCH" != "arm64" ]; then
+				add_make_enabled "HAVE_ARMV7A"
+				fi
+				;;
+			esac
 		fi
 		;;
 	*bsd*)
