@@ -1,0 +1,19 @@
+diff -ru flac/configure.ac flac-fixed/configure.ac
+--- flac/configure.ac	2013-05-27 10:08:57.000000000 +0200
++++ flac-fixed/configure.ac	2013-10-07 16:56:51.000000000 +0200
+@@ -381,15 +381,9 @@
+ 		CXXFLAGS="$CXXFLAGS -Wall -Wextra -Werror "
+ 		fi
+ 
+-	if test "$GCC_MAJOR_VERSION" -ge 4 && test "$OBJ_FORMAT" = elf; then
+ 		CPPFLAGS="$CPPFLAGS -DFLAC__USE_VISIBILITY_ATTR"
+ 		CFLAGS="$CFLAGS -fvisibility=hidden"
+ 		CXXFLAGS="$CXXFLAGS -fvisibility=hidden"
+-		fi
+-
+-	if test "x$GCC_MAJOR_VERSION$GCC_MINOR_VERSION" = "x42" ; then
+-		XIPH_ADD_CFLAGS([-fgnu89-inline])
+-		fi
+ 	fi
+ 
+ 

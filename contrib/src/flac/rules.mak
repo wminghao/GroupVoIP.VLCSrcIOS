@@ -17,6 +17,7 @@ flac: flac-$(FLAC_VERSION).tar.xz .sum-flac
 	$(UNPACK)
 	$(APPLY) $(SRC)/flac/libFLAC-pc.patch
 ifdef HAVE_DARWIN_OS
+	$(APPLY) $(SRC)/flac/libFLAC-clang-5.0.patch
 	cd $(UNPACK_DIR) && sed -e 's,-dynamiclib,-dynamiclib -arch $(ARCH),' -i.orig configure
 endif
 ifdef HAVE_ANDROID
