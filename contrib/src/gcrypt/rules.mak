@@ -1,6 +1,7 @@
 # GCRYPT
 GCRYPT_VERSION := 1.6.0
 GCRYPT_URL := ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-$(GCRYPT_VERSION).tar.bz2
+GCRYPT_GITURL := git://git.gnupg.org/libgcrypt.git
 
 PKGS += gcrypt
 
@@ -9,12 +10,24 @@ $(TARBALLS)/libgcrypt-$(GCRYPT_VERSION).tar.bz2:
 
 .sum-gcrypt: libgcrypt-$(GCRYPT_VERSION).tar.bz2
 
+$(TARBALLS)/libgcrypt-git.tar.xz:
+	$(call download_git,$(GCRYPT_GITURL),,d1cadd145)
+
+ifndef HAVE_IOS
 libgcrypt: libgcrypt-$(GCRYPT_VERSION).tar.bz2 .sum-gcrypt
 	$(UNPACK)
 	$(APPLY) $(SRC)/gcrypt/gcrypt-fix-x86_64-codepath-on-Darwin.patch
 	$(APPLY) $(SRC)/gcrypt/fix-amd64-assembly-on-solaris.patch
 	$(APPLY) $(SRC)/gcrypt/0001-Fix-assembly-division-check.patch
 	$(MOVE)
+else
+libgcrypt: libgcrypt-git.tar.xz
+	$(UNPACK)
+	$(APPLY) $(SRC)/gcrypt/gcrypt-fix-x86_64-codepath-on-Darwin.patch
+	$(APPLY) $(SRC)/gcrypt/disable-doc-compilation.patch
+	$(APPLY) $(SRC)/gcrypt/work-around-libtool-limitation.patch
+	$(MOVE)
+endif
 
 DEPS_gcrypt = gpg-error
 
@@ -48,6 +61,6 @@ endif
 
 .gcrypt: libgcrypt
 	$(RECONF)
-	cd $< && $(HOSTVARS) CFLAGS="$(CFLAGS) $(GCRYPT_EXTRA_CFLAGS)" ./configure $(HOSTCONF) $(GCRYPT_CONF)
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(GCRYPT_CONF)
 	cd $< && $(MAKE) install
 	touch $@
