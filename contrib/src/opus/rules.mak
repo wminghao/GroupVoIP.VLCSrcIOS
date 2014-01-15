@@ -23,6 +23,9 @@ OPUS_CONF=
 ifndef HAVE_FPU
 OPUS_CONF += --enable-fixed-point
 endif
+ifdef HAVE_IOS
+OPUS_CONF += --disable-asm
+endif
 
 .opus: opus
 	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(OPUS_CONF)
