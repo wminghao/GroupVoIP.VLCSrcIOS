@@ -31,6 +31,11 @@ ifeq ($(ARCH),arm)
 SPEEXDSP_CONF += --enable-arm5e-asm
 endif
 endif
+ifdef HAVE_IOS
+ifndef HAVE_ARMV7A
+SPEEXDSP_CONF += --disable-neon
+endif
+endif
 
 .speexdsp: speexdsp
 	mkdir -p $</m4 && $(RECONF)
