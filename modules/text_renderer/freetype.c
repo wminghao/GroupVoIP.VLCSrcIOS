@@ -1950,6 +1950,8 @@ static int Create( vlc_object_t *p_this )
 #elif defined( __APPLE__ )
 #if !TARGET_OS_IPHONE
     p_sys->pf_select = MacLegacy_Select;
+#else
+    p_sys->pf_select = iOSFake_Select;
 #endif
 #elif defined( _WIN32 ) && defined( HAVE_GET_FONT_BY_FAMILY_NAME )
     p_sys->pf_select = Win32_Select;

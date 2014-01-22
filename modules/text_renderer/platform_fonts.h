@@ -95,6 +95,9 @@ char* Win32_Select( filter_t *p_filter, const char* family,
 #if !TARGET_OS_IPHONE
 char* MacLegacy_Select( filter_t *p_filter, const char* psz_fontname,
                           bool b_bold, bool b_italic, int i_size, int *i_idx );
+#else
+char *iOSFake_Select( filter_t *p_filter, const char* psz_fontname,
+                          bool b_bold, bool b_italic, int i_size, int *i_idx );
 #endif
 #endif
 

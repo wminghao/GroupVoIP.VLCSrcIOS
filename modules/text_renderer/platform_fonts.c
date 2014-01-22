@@ -42,6 +42,9 @@
 #include <TargetConditionals.h>
 #if !TARGET_OS_IPHONE
 #include <Carbon/Carbon.h>
+#else
+#include <CoreFoundation/CoreFoundation.h>
+#include <vlc_url.h>
 #endif
 #include <sys/param.h>                         /* for MAXPATHLEN */
 #undef HAVE_FONTCONFIG
@@ -402,6 +405,43 @@ char* MacLegacy_Select( filter_t *p_filter, const char* psz_fontname,
     msg_Dbg( p_filter, "found %s", path );
 
     psz_path = strdup( (char *)path );
+
+    return psz_path;
+}
+#else
+char *iOSFake_Select( filter_t *p_filter, const char* psz_fontname,
+                          bool b_bold, bool b_italic, int i_size, int *i_idx )
+{
+    VLC_UNUSED(p_filter);
+    VLC_UNUSED(psz_fontname);
+    VLC_UNUSED(b_bold);
+    VLC_UNUSED(b_italic);
+    VLC_UNUSED(i_size);
+    VLC_UNUSED(i_idx);
+
+    CFURLRef fileURL;
+    fileURL = CFBundleCopyResourceURL(CFBundleGetMainBundle(), 
+                                      CFSTR("OpenSans-Regular.ttf"),
+                                      NULL,
+                                      NULL);
+    if (!fileURL)
+        return NULL;
+    CFStringRef urlString = CFURLCopyFileSystemPath(fileURL, kCFURLPOSIXPathStyle);
+    CFRelease(fileURL);
+
+    if (!urlString)
+        return NULL;
+
+    CFIndex length = CFStringGetLength(urlString);
+    if (!length)
+        return NULL;
+    length++;
+
+    char *psz_path = (char *)malloc(length);
+    CFStringGetCString(urlString, psz_path, length, kCFStringEncodingUTF8);
+    CFRelease(urlString);
+
+    psz_path = strdup(psz_path);
 
     return psz_path;
 }
