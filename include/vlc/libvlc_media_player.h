@@ -1382,6 +1382,27 @@ LIBVLC_API float libvlc_video_get_adjust_float( libvlc_media_player_t *p_mi,
 LIBVLC_API void libvlc_video_set_adjust_float( libvlc_media_player_t *p_mi,
                                                    unsigned option, float value );
 
+/** option values for libvlc_video_{get,set}_adjust_{int,float,bool} */
+enum libvlc_video_textrenderer_option_t {
+    libvlc_textrender_font = 0,
+    libvlc_textrender_fontsize,
+    libvlc_textrender_fontcolor,
+};
+
+LIBVLC_API int libvlc_video_get_textrenderer_int( libvlc_media_player_t *p_mi,
+                                                  unsigned option );
+
+LIBVLC_API void libvlc_video_set_textrenderer_int( libvlc_media_player_t *p_mi,
+                                                   unsigned option, int value );
+
+LIBVLC_API char *libvlc_video_get_textrenderer_string( libvlc_media_player_t *p_mi,
+                                                          unsigned option );
+
+LIBVLC_API void libvlc_video_set_textrenderer_string( libvlc_media_player_t *p_mi,
+                                                      unsigned option,
+                                                      const char *psz_text );
+
+
 /** @} video */
 
 /** \defgroup libvlc_audio LibVLC audio controls

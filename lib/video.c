@@ -933,3 +933,50 @@ float libvlc_video_get_adjust_float( libvlc_media_player_t *p_mi,
 {
     return get_float( p_mi, "adjust", adjust_option_bynumber(option) );
 }
+
+
+static const opt_t *
+textrenderer_option_bynumber( unsigned option )
+{
+    static const opt_t optlist[] =
+    {
+        { "quartztext-font",            VLC_VAR_STRING },
+        { "quartztext-fontsize",    VLC_VAR_INTEGER },
+        { "quartztext-color",           VLC_VAR_INTEGER },
+    };
+    enum { num_opts = sizeof(optlist) / sizeof(*optlist) };
+
+    const opt_t *r = option < num_opts ? optlist+option : NULL;
+    if( !r )
+        libvlc_printerr( "Unknown quartztext option" );
+    return r;
+}
+
+/* basic text renderer support */
+
+void libvlc_video_set_textrenderer_int( libvlc_media_player_t *p_mi,
+                                 unsigned option, int value )
+{
+    set_int( p_mi, "quartztext", textrenderer_option_bynumber(option), value );
+}
+
+
+int libvlc_video_get_textrenderer_int( libvlc_media_player_t *p_mi,
+                                unsigned option )
+{
+    return get_int( p_mi, "quartztext", textrenderer_option_bynumber(option) );
+}
+
+
+void libvlc_video_set_textrenderer_string( libvlc_media_player_t *p_mi,
+                                   unsigned option, const char *psz_value )
+{
+    set_string( p_mi, "quartztext", textrenderer_option_bynumber(option), psz_value );
+}
+
+
+char * libvlc_video_get_textrenderer_string( libvlc_media_player_t *p_mi,
+                                    unsigned option )
+{
+    return get_string( p_mi, "quartztext", textrenderer_option_bynumber(option) );
+}

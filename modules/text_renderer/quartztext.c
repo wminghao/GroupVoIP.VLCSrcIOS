@@ -65,6 +65,10 @@
 static int  Create (vlc_object_t *);
 static void Destroy(vlc_object_t *);
 
+static int QuartztextCallback( vlc_object_t *p_this, char const *psz_var,
+                               vlc_value_t oldval, vlc_value_t newval,
+                               void *p_data );
+
 static int LoadFontsFromAttachments(filter_t *p_filter);
 
 static int RenderText(filter_t *, subpicture_region_t *,
@@ -128,14 +132,17 @@ vlc_module_begin ()
 
     add_string("quartztext-font", DEFAULT_FONT, FONT_TEXT, FONT_LONGTEXT,
               false)
-    add_integer("quartztext-rel-fontsize", DEFAULT_REL_FONT_SIZE, FONTSIZER_TEXT,
+        change_safe()
+    add_integer("quartztext-fontsize", DEFAULT_REL_FONT_SIZE, FONTSIZER_TEXT,
                  FONTSIZER_LONGTEXT, false)
+        change_safe()
         change_integer_list(pi_sizes, ppsz_sizes_text)
     add_integer("quartztext-color", 0x00FFFFFF, COLOR_TEXT,
                  COLOR_LONGTEXT, false)
+        change_safe()
         change_integer_list(pi_color_values, ppsz_color_descriptions)
     set_capability("text renderer", 50)
-    add_shortcut("text")
+    add_shortcut("quartztext")
     set_callbacks(Create, Destroy)
 vlc_module_end ()
 
@@ -177,7 +184,8 @@ struct offscreen_bitmap_t
  *****************************************************************************/
 struct filter_sys_t
 {
-    char          *psz_font_name;
+    vlc_mutex_t    lock;
+    char           *psz_font_name;
     uint8_t        i_font_opacity;
     int            i_font_color;
     int            i_font_size;
@@ -202,9 +210,9 @@ static int Create(vlc_object_t *p_this)
     p_filter->p_sys = p_sys = malloc(sizeof(filter_sys_t));
     if (!p_sys)
         return VLC_ENOMEM;
-    p_sys->psz_font_name  = var_CreateGetString(p_this, "quartztext-font");
+    p_sys->psz_font_name  = var_CreateGetStringCommand(p_this, "quartztext-font");
     p_sys->i_font_opacity = 255;
-    p_sys->i_font_color = VLC_CLIP(var_CreateGetInteger(p_this, "quartztext-color") , 0, 0xFFFFFF);
+    p_sys->i_font_color = VLC_CLIP(var_CreateGetIntegerCommand(p_this, "quartztext-color") , 0, 0xFFFFFF);
     p_sys->i_font_size = GetFontSize(p_filter);
 
     p_filter->pf_render_text = RenderText;
@@ -214,6 +222,11 @@ static int Create(vlc_object_t *p_this)
     p_sys->p_fonts = NULL;
     p_sys->i_fonts = 0;
 #endif
+
+    vlc_mutex_init( &p_sys->lock );
+    var_AddCallback( p_filter, "quartztext-font", QuartztextCallback, p_sys );
+    var_AddCallback( p_filter, "quartztext-fontsize", QuartztextCallback, p_sys );
+    var_AddCallback( p_filter, "quartztext-color", QuartztextCallback, p_sys );
 
     LoadFontsFromAttachments(p_filter);
 
@@ -229,6 +242,16 @@ static void Destroy(vlc_object_t *p_this)
 {
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys = p_filter->p_sys;
+
+    var_DelCallback( p_filter, "quartztext-font", QuartztextCallback, p_sys );
+    var_DelCallback( p_filter, "quartztext-fontsize", QuartztextCallback, p_sys );
+    var_DelCallback( p_filter, "quartztext-color", QuartztextCallback, p_sys );
+    vlc_mutex_destroy( &p_sys->lock );
+
+    var_Destroy( p_filter, "quartztext-font" ) ;
+    var_Destroy( p_filter, "quartztext-fontsize" );
+    var_Destroy( p_filter, "quartztext-color" );
+
 #ifndef TARGET_OS_IPHONE
     if (p_sys->p_fonts) {
         for (int k = 0; k < p_sys->i_fonts; k++) {
@@ -236,8 +259,8 @@ static void Destroy(vlc_object_t *p_this)
 
         free(p_sys->p_fonts);
     }
-#endif
     free(p_sys->psz_font_name);
+#endif
     free(p_sys);
 }
 
@@ -959,12 +982,12 @@ static int GetFontSize(filter_t *p_filter)
 {
     int i_size = 0;
 
-    int i_ratio = var_CreateGetInteger( p_filter, "quartztext-rel-fontsize" );
+    int i_ratio = var_CreateGetIntegerCommand( p_filter, "quartztext-fontsize" );
+
     if( i_ratio > 0 )
         i_size = (int)p_filter->fmt_out.video.i_height / i_ratio;
 
-    if( i_size <= 0 )
-    {
+    if( i_size <= 0 ) {
         msg_Warn( p_filter, "invalid fontsize, using 12" );
         i_size = 12;
     }
@@ -1045,6 +1068,26 @@ static int RenderYUVA(filter_t *p_filter, subpicture_region_t *p_region,
 
     free(p_offScreen->p_data);
     free(p_offScreen);
+
+    return VLC_SUCCESS;
+}
+
+static int QuartztextCallback( vlc_object_t *p_this, char const *psz_var,
+                              vlc_value_t oldval, vlc_value_t newval,
+                              void *p_data )
+{
+    VLC_UNUSED(oldval);
+    filter_t *p_filter = (filter_t *)p_this;
+    filter_sys_t *p_sys = (filter_sys_t *)p_data;
+
+    vlc_mutex_lock( &p_sys->lock );
+    if( !strcmp( psz_var, "quartztext-font" ) )
+        p_sys->psz_font_name = newval.psz_string;
+    else if( !strcmp( psz_var, "quartztext-fontsize" ) )
+        p_sys->i_font_size = (int)p_filter->fmt_out.video.i_height / newval.i_int;
+    else if( !strcmp( psz_var, "quartztext-color" ) )
+        p_sys->i_font_color = VLC_CLIP(newval.i_int, 0, 0xFFFFFF);
+    vlc_mutex_unlock( &p_sys->lock );
 
     return VLC_SUCCESS;
 }

@@ -464,6 +464,12 @@ libvlc_media_player_new( libvlc_instance_t *instance )
     var_Create (mp, "saturation", VLC_VAR_FLOAT | VLC_VAR_DOINHERIT);
     var_Create (mp, "gamma", VLC_VAR_FLOAT | VLC_VAR_DOINHERIT);
 
+#ifdef __APPLE__
+    var_Create (mp, "quartztext-font", VLC_VAR_STRING | VLC_VAR_DOINHERIT);
+    var_Create (mp, "quartztext-fontsize", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
+    var_Create (mp, "quartztext-color", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
+#endif
+
      /* Audio */
     var_Create (mp, "aout", VLC_VAR_STRING | VLC_VAR_DOINHERIT);
     var_Create (mp, "mute", VLC_VAR_BOOL);
