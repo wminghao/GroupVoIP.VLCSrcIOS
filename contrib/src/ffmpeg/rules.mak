@@ -15,9 +15,8 @@ endif
 FFMPEGCONF = \
 	--cc="$(CC)" \
 	--disable-doc \
-	--disable-encoder=vorbis \
-	--enable-libgsm \
-	--enable-libopenjpeg \
+	--disable-libgsm \
+	--disable-libopenjpeg \
 	--disable-debug \
 	--disable-avdevice \
 	--disable-devices \
@@ -26,7 +25,8 @@ FFMPEGCONF = \
 	--disable-bsfs \
 	--disable-bzlib \
 	--disable-programs \
-	--disable-avresample
+	--disable-avresample \
+	--disable-random
 
 ifdef USE_FFMPEG
 FFMPEGCONF += \
@@ -46,6 +46,24 @@ DEPS_ffmpeg += lame $(DEPS_lame) vpx $(DEPS_vpx)
 else
 FFMPEGCONF += --disable-encoders --disable-muxers
 endif
+
+#Howard modify disable most decoders, demux, parsers. disable all encoders
+GROUPVOIP_UNWANTED = \
+		   --disable-encoders \
+		   --disable-decoders \
+		   --enable-decoder='aac,h264,mp3,mp3float,mp3adu,mp3adufloat,mp3on4,mp3on4float,vp8,libvpx_vp8' \
+		   --disable-demuxers \
+		   --enable-demuxer='flv' \
+		   --disable-parsers \
+		   --enable-parser='aac,mpegaudio,vp8' \
+		   --disable-protocols \
+		   --enable-protocol='http,rtmp,librtmp,ffrtmphttp' \
+		   --disable-armv5te \
+		   --disable-armv6 \
+		   --disable-armv6t2 \
+		   --disable-thumb
+
+FFMPEGCONF += $(GROUPVOIP_UNWANTED)
 
 # Small size
 ifdef ENABLE_SMALL

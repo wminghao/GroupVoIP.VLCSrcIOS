@@ -190,6 +190,7 @@ fi
 
 ../bootstrap --build=x86_64-apple-darwin11 --host=${TARGET} --prefix=${VLCROOT}/contrib/${TARGET}-${ARCH} --arch=${ARCH} --disable-gpl \
     --disable-disc --disable-sout \
+    --disable-debug \
     --disable-sdl \
     --disable-SDL_image \
     --disable-iconv \
@@ -201,24 +202,26 @@ fi
     --disable-upnp \
     --disable-gme \
     --disable-tremor \
-    --enable-vorbis \
+    --disable-vorbis \
     --disable-sidplay2 \
     --disable-samplerate \
     --disable-goom \
+    --disable-gcrypt \
     --disable-vncserver \
+    --disable-gnutls \
     --disable-orc \
     --disable-schroedinger \
     --disable-libmpeg2 \
     --disable-chromaprint \
     --disable-mad \
     --enable-fribidi \
-    --enable-libxml2 \
+    --disable-libxml2 \
     --enable-freetype2 \
-    --enable-ass \
+    --disable-ass \
     --disable-fontconfig \
     --disable-gpg-error \
     --disable-lua \
-    --enable-taglib > ${out}
+    --disable-taglib > ${out}
 
 echo "EXTRA_CFLAGS += ${EXTRA_CFLAGS}" >> config.mak
 echo "EXTRA_LDFLAGS += ${EXTRA_LDFLAGS}" >> config.mak
@@ -258,23 +261,29 @@ ${VLCROOT}/configure \
     --disable-debug \
     --enable-static \
     --disable-macosx \
+    --disable-macosx-vout \
     --disable-macosx-dialog-provider \
     --disable-macosx-qtkit \
     --disable-macosx-eyetv \
     --disable-macosx-vlc-app \
     --disable-macosx-avfoundation \
-    --disable-audioqueue \
+    --enable-audioqueue \
+    --enable-ios-audio \
+    --enable-ios-vout \
+    --enable-ios-vout2 \
     --disable-shared \
     --enable-macosx-quartztext \
     --enable-avcodec \
-    --enable-mkv \
-    --enable-opus \
+    --disable-mkv \
+    --disable-opus \
     --disable-sout \
     --disable-faad \
     --disable-lua \
     --disable-a52 \
     --enable-fribidi \
+    --disable-macosx-audio \
     --disable-qt --disable-skins2 \
+    --disable-libgcrypt \
     --disable-vcd \
     --disable-vlc \
     --disable-vlm \
@@ -284,13 +293,13 @@ ${VLCROOT}/configure \
     --disable-sse \
     --enable-neon \
     --disable-notify \
-    --enable-live555 \
-    --enable-realrtsp \
+    --disable-live555 \
+    --disable-realrtsp \
     --enable-dvbpsi \
     --enable-swscale \
     --disable-projectm \
-    --enable-libass \
-    --enable-libxml2 \
+    --disable-libass \
+    --disable-libxml2 \
     --disable-goom \
     --disable-dvdread \
     --disable-dvdnav \
@@ -299,18 +308,18 @@ ${VLCROOT}/configure \
     --disable-libva \
     --disable-gme \
     --disable-tremor \
-    --enable-vorbis \
+    --disable-vorbis \
     --disable-fluidsynth \
     --disable-jack \
     --disable-pulse \
     --disable-mtp \
-    --enable-ogg \
-    --enable-speex \
-    --enable-theora \
-    --enable-flac \
+    --disable-ogg \
+    --disable-speex \
+    --disable-theora \
+    --disable-flac \
     --disable-screen \
     --enable-freetype \
-    --enable-taglib \
+    --disable-taglib \
     --disable-mmx \
     --disable-addonmanagermodules \
     --disable-mad > ${out} # MMX and SSE support requires llvm which is broken on Simulator
@@ -339,6 +348,7 @@ oldrc
 real
 hotkeys
 gestures
+sap
 dynamicoverlay
 rss
 ball
@@ -395,6 +405,121 @@ colorthres
 antiflicker
 anaglyph
 remap
+openjpeg
+png
+libopenjpeg
+libpng
+libdolby_surround_decoder_plugin
+libadjust_plugin
+libspatializer_plugin
+libstereo_widen_plugin
+libdeinterlace_plugin
+libdecomp_plugin
+libblend_plugin
+libcompressor_plugin
+libdts_plugin
+libes_plugin
+libimage_plugin
+libplaylist_plugin
+libpng_plugin
+libcanvas_plugin
+libmp4_plugin
+libmpgv_plugin
+libps_plugin
+libaccess_attachment_plugin
+libaccess_avio_plugin
+libaccess_ftp_plugin
+libaccess_mms_plugin
+libaccess_rar_plugin
+libaccess_udp_plugin
+libaccess_vdr_plugin
+libadpcm_plugin
+libaes3_plugin
+libafile_plugin
+libaiff_plugin
+libaraw_plugin
+libau_plugin
+libcc_plugin
+libcdg_plugin
+libchain_plugin
+libchorus_flanger_plugin
+libcroppadd_plugin
+libcvdsub_plugin
+libdash
+libdemux_cdg_plugin
+libdemux_stl_plugin
+libdemuxdump_plugin
+libdirac_plugin
+libdvbsub_plugin
+libequalizer_plugin
+libfilesystem_plugin
+libflacsys_plugin
+libfolder_plugin
+libfreetype_plugin
+libg711_plugin
+libgain_plugin
+libgrey_yuv_plugin
+libi420_rgb_plugin
+libi420_yuy2_plugin
+libi422_i420_plugin
+libi422_yuy2_plugin
+libkaraoke_plugin
+liblogo_plugin
+liblpcm_plugin
+libmjpeg_plugin
+libmod_plugin
+libmono_plugin
+libnsc_plugin
+libnsv_plugin
+libnuv_plugin
+libpacketizer_dirac_plugin
+libpacketizer_flac_plugin
+libpacketizer_mlp_plugin
+libpacketizer_vc1_plugin
+libpva_plugin
+libquartztext_plugin
+librawaud_plugin
+librawdv_plugin
+librawvid_plugin
+librawvideo_plugin
+librecord_plugin
+librtp_plugin
+librv32_plugin
+libsap_plugin
+libscte27_plugin
+libsdp_plugin
+libspudec_plugin
+libstl_plugin
+libstream_filter_rar_plugin
+libsubsdec_plugin
+libsubsdelay_plugin
+libsubsusf_plugin
+libsubtitle_plugin
+libsvcdsub_plugin
+libtelx_plugin
+libtta_plugin
+libty_plugin
+libuleaddvaudio_plugin
+libvc1_plugin
+libvmem_plugin
+libvobsub_plugin
+libvoc_plugin
+libwav_plugin
+libxa_plugin
+libxml
+libzip_plugin
+libzvbi
+libflac_plugin
+libmkv_plugin
+libtaglib_plugin
+liblibass_plugin
+libogg_plugin
+libopus_plugin
+libspeex_plugin
+libtheora_plugin
+libvorbis_plugin
+libhttplive_plugin
+liblive555_plugin
 "
 
 for i in ${blacklist}
