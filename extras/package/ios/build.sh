@@ -6,6 +6,7 @@ VERBOSE=no
 SDK_VERSION=7.0
 SDK_MIN=5.1
 ARCH=armv7
+CONFIGURATION = "Release"
 
 usage()
 {
@@ -15,6 +16,7 @@ usage: $0 [-s] [-k sdk]
 OPTIONS
    -k <sdk version>      Specify which sdk to use ('xcodebuild -showsdks', current: ${SDK_VERSION})
    -s            Build for simulator
+   -d            Enable debug
    -a <arch>     Specify which arch to use (current: ${ARCH})
 EOF
 }
@@ -49,6 +51,9 @@ do
          s)
              PLATFORM=Simulator
              ;;
+         d)
+             CONFIGURATION = "Debug"
+             ;;
          k)
              SDK_VERSION=$OPTARG
              ;;
@@ -77,10 +82,16 @@ info "Building libvlc for iOS"
 
 if [ "$PLATFORM" = "Simulator" ]; then
     TARGET="${ARCH}-apple-darwin11"
-    OPTIM="-O3 -g"
 else
     TARGET="arm-apple-darwin11"
+fi
+
+if [ "$CONFIGURATION" = "Debug" ]; then
+    OPTIM="-g"
+    ENABLE_DEBUG_OPTION = "--enable-debug"
+else
     OPTIM="-O3 -g"
+    ENABLE_DEBUG_OPTION = "--disable-debug"
 fi
 
 info "Using ${ARCH} with SDK version ${SDK_VERSION}"
@@ -190,7 +201,7 @@ fi
 
 ../bootstrap --build=x86_64-apple-darwin11 --host=${TARGET} --prefix=${VLCROOT}/contrib/${TARGET}-${ARCH} --arch=${ARCH} --disable-gpl \
     --disable-disc --disable-sout \
-    --disable-debug \
+    ${ENABLE_DEBUG_OPTION} \
     --disable-sdl \
     --disable-SDL_image \
     --disable-iconv \
@@ -258,7 +269,7 @@ ${VLCROOT}/configure \
     --prefix="${PREFIX}" \
     --host="${TARGET}" \
     --with-contrib="${VLCROOT}/contrib/${TARGET}-${ARCH}" \
-    --disable-debug \
+    ${ENABLE_DEBUG_OPTION} \
     --enable-static \
     --disable-macosx \
     --disable-macosx-vout \
