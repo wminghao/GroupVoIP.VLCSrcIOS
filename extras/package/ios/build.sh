@@ -5,13 +5,13 @@ PLATFORM=OS
 VERBOSE=no
 SDK_VERSION=7.0
 SDK_MIN=5.1
+CONFIGURATION="Release"
 ARCH=armv7
-CONFIGURATION = "Release"
 
 usage()
 {
 cat << EOF
-usage: $0 [-s] [-k sdk]
+usage: $0 [-s] [-k sdk] [-d]
 
 OPTIONS
    -k <sdk version>      Specify which sdk to use ('xcodebuild -showsdks', current: ${SDK_VERSION})
@@ -38,7 +38,7 @@ info()
     echo "[${blue}info${normal}] $1"
 }
 
-while getopts "hvsk:a:" OPTION
+while getopts "hvsdk:a:" OPTION
 do
      case $OPTION in
          h)
@@ -51,8 +51,7 @@ do
          s)
              PLATFORM=Simulator
              ;;
-         d)
-             CONFIGURATION = "Debug"
+         d)  CONFIGURATION="Debug"
              ;;
          k)
              SDK_VERSION=$OPTARG
