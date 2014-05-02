@@ -1999,10 +1999,6 @@ dnl
 dnl  ogg demux plugin
 dnl
 PKG_ENABLE_MODULES_VLC([OGG], [], [ogg >= 1.0], [Ogg demux support], [auto])
-PKG_CHECK_MODULES(LIBVORBIS, [vorbis >= 1.1], [
-    AC_DEFINE(HAVE_LIBVORBIS, 1, [Define to 1 if you have the libvorbis])
-],[])
-PKG_ENABLE_MODULES_VLC([OGG], [], [ogg >= 1.0], [Ogg demux support], [auto], [${LIBVORBIS_CFLAGS}], [${LIBVORBIS_LIBS}])
 if test "${enable_sout}" != "no"; then
     PKG_ENABLE_MODULES_VLC([MUX_OGG], [], [ogg >= 1.0], [Ogg mux support], [auto])
 dnl Check for libshout
@@ -2664,11 +2660,6 @@ dnl
 dnl  Libmpeg2 plugin
 dnl
 PKG_ENABLE_MODULES_VLC([LIBMPEG2], [], [libmpeg2 > 0.3.2], [libmpeg2 decoder support], [auto])
-
-dnl
-dnl  Vorbis plugin
-dnl
-PKG_ENABLE_MODULES_VLC([VORBIS], [], [ogg vorbis >= 1.1 vorbisenc >= 1.1], [Vorbis decoder and encoder], [auto])
 
 dnl
 dnl  Tremor plugin
