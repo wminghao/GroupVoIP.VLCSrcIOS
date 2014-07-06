@@ -51,7 +51,9 @@ do
          s)
              PLATFORM=Simulator
              ;;
-         d)  CONFIGURATION="Debug"
+         d)  
+	     CONFIGURATION="Debug"
+	     echo "=============>debug"
              ;;
          k)
              SDK_VERSION=$OPTARG
